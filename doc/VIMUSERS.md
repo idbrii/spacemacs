@@ -15,7 +15,7 @@ return to evil mode.
 
 ## Differences in defaults
 
-Defaults that start with dodotspacemacs can be changed in dotspacemacs/init. The variable is already defined, you just need to change the value.
+Defaults that start with dotspacemacs can be changed in dotspacemacs/init. The variable is already defined, you just need to change the value.
 
 Other settings need to be added to dotspacemacs/config as a line of lisp code.
 
@@ -34,9 +34,26 @@ Many settings can be toggled at run time with `SPC t <setting>`. Try typing `SPC
     (global-hl-line-mode -1)
     SPC t h
 
+* Yanking modifies the clipboard
+
+Spacemacs acts like `clipboard=unnamed` and every yank is put on the system clipboard. You can disable this behavior and still use the `+` register to yank to the clipboard:
+
+  (setq x-select-enable-clipboard nil)
+
+* 'wrap' is set, but 'linebreak' is not
+
+In vim, if you use 'wrap' and 'linebreak', you get softwrapped text that breaks on word boundaries. Spacemacs gives you just softwrapped text.
 
 ## Differences in normal mode
 * C-l scrolls buffer down instead of redrawing
+
+
+## Differences in search cmdline
+Pressing `/` enters search cmdline like in vim.
+* you cannot press Up/Down to navigate history.
+* you cannot press C-f to go to a buffer of search history.
+* C-w does not erase a word
+* C-u does not clear before the cursor
 
 
 ## Helm Minibuffer
@@ -45,8 +62,12 @@ While cmdline (pressing :) still works like in vim, the emacs filter view (helm 
 * pressing tab does not autocomplete
  * instead you use Right Arrow
  * if you hit tab, you can get back with tab again
-* C-w does not erase a word
+* C-w does not erase a word. You can fix with:
+
+    (define-key helm-map (kbd "C-w") 'backward-kill-word)
+
 * C-u does not clear before the cursor
+* C-r does not work (inserting a word, file, etc under cursor)
 
 
 # Lingo
@@ -131,6 +152,33 @@ You map keys with evil-define-key. If you had surround mapped to a different key
 
     (evil-define-key 'visual evil-surround-mode-map "s" 'evil-substitute)
     (evil-define-key 'visual evil-surround-mode-map "c" 'evil-surround-region)
+
+Here's a set of consistent functions to make it easier to map keys:
+
+    (defsubst evil-leader-nmap (key command)
+      (evil-leader/set-key key command))
+
+    (defsubst evil-map (mode key command)
+      (define-key mode (kbd key) command))
+
+    (defsubst evil-vmap (key command)
+      (evil-map evil-visual-state-map key command))
+
+    (defsubst evil-nmap (key command)
+      (evil-map evil-normal-state-map key command)
+      (evil-map evil-motion-state-map key command))
+
+    (defsubst evil-imap (key command)
+      (evil-map evil-insert-state-map key command))
+
+
+defsubst is like defun, but it makes the functions inline (since these are so small, it's worth inlining them). Put them in your dotspacemacs above your dotspacemacs/config function (not inside the function). Call them inside your dotspacemacs/config function like this:
+
+    (evil-vmap "g *" 'evil-visualstar/begin-search-forward)
+
+
+[kbd and other info](http://emacslife.com/read-lisp-tweak-emacs/beginner-3-make-things-more-convenient.html#sec-1-2)
+
 
 
 
