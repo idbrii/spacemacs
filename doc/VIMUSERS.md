@@ -171,14 +171,33 @@ Here's a set of consistent functions to make it easier to map keys:
     (defsubst evil-imap (key command)
       (evil-map evil-insert-state-map key command))
 
+[kbd and other info](http://emacslife.com/read-lisp-tweak-emacs/beginner-3-make-things-more-convenient.html#sec-1-2)
 
 defsubst is like defun, but it makes the functions inline (since these are so small, it's worth inlining them). Put them in your dotspacemacs above your dotspacemacs/config function (not inside the function). Call them inside your dotspacemacs/config function like this:
 
     (evil-vmap "g *" 'evil-visualstar/begin-search-forward)
 
+To create more advanced bindings that chain multiple commands together, you must create an interactive function:
 
-[kbd and other info](http://emacslife.com/read-lisp-tweak-emacs/beginner-3-make-things-more-convenient.html#sec-1-2)
+    ;; A function to collect together three behaviors:
+    ;;  * returning to normal mode (<Esc>)
+    ;;  * removing search highlighting (:nohlsearch)
+    ;;  * redrawing the display (<C-l>)
+    (defun evil-david-clear-screen ()
+      (interactive)
+      (evil-normal-state)
+      (evil-search-highlight-persist-remove-all)
+      (redraw-display))
 
+    ;; Remove the old keybinding so you don't accidentally use it outside of
+    ;; evil mode.
+    (global-unset-key (kbd "C-l"))
+    ;; Equivalent to :nnoremap <C-l> <Esc>:nohlsearch<CR><C-l>
+    (evil-nmap "C-l" 'evil-david-clear-screen)
+    ;; Equivalent to :inoremap <C-l> <Esc>:nohlsearch<CR><C-l>
+    (evil-imap "C-l" 'evil-david-clear-screen)
+
+Functions called from a binding should always have (interactive) first. You can use helm-descbinds (`SPC ?`) to see existing bindings to determine what functions to call. Emacs bindings only bind to functions (not other key inputs) so they are never recursive and do not require a noremap equivalent. (Just don't write unguarded recursive functions.)
 
 
 
