@@ -11,6 +11,10 @@ If you get in trouble, just keep hitting Esc to return to normal
 mode. If you see `-- EMACS --` at the bottom of emacs, hit `C-z` to
 return to evil mode.
 
+IMPORTANT: Mappings below are defined using functions in the
+Customising key bindings section. (Eventually, I'd like to get them
+included in spacemacs/evil.)
+
 # Differences
 
 ## Differences in defaults
@@ -47,6 +51,11 @@ In vim, if you use 'wrap' and 'linebreak', you get softwrapped text that breaks 
 ## Differences in normal mode
 * C-l scrolls buffer down instead of redrawing
 
+## Differences in visual mode
+* \* searches for selection instead of word under cursor. This behavior is similar to [vim-visual-star-search](https://github.com/bronson/vim-visual-star-search). To get something close to the vanilla vim behavior (but it searches for partial words):
+
+    (evil-vmap "*" 'evil-search-unbounded-word-forward)
+    (evil-vmap "g *" 'evil-visualstar/begin-search-forward)
 
 ## Differences in search cmdline
 Pressing `/` enters search cmdline like in vim.
@@ -69,6 +78,31 @@ While cmdline (pressing :) still works like in vim, the emacs filter view (helm 
 * C-u does not clear before the cursor
 * C-r does not work (inserting a word, file, etc under cursor)
 
+
+# Common Vim Changes
+There are some maps/settings that are so common that they're suggested by the vim help or implemented in [vim-sensible](https://github.com/tpope/vim-sensible). Here's how you do them in spacemacs.
+
+* `nnoremap Y y$`
+
+Make Y consistent with C and D by operating from cursor to end of line.
+
+    (evil-nmap "Y" 'evil-copy-to-end-of-line)
+  
+* `nnoremap Q gw`
+
+Use Q for formatting. To map to the `gq` equivalent (reposition cursor) instead of `gw` (format without moving cursor), use `'evil-fill-and-move`.
+
+    (evil-nmap "Q" 'evil-fill)
+
+* `nnoremap <C-q> <C-v>`
+
+Use C-q to start block selection.
+
+    (evil-nmap "C-q" 'evil-visual-block)
+
+* `nnoremap cw dwi`
+
+From :help cw
 
 # Lingo
 
