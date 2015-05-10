@@ -50,6 +50,9 @@ In vim, if you use 'wrap' and 'linebreak', you get softwrapped text that breaks 
 
 ## Differences in normal mode
 * C-l scrolls buffer down instead of redrawing
+* C-w C-q doesn't quit a buffer
+
+  (evil-nmap "C-w q" 'evil-window-delete)
 
 ## Differences in visual mode
 * \* searches for selection instead of word under cursor. This behavior is similar to [vim-visual-star-search](https://github.com/bronson/vim-visual-star-search). To get something close to the vanilla vim behavior (but it searches for partial words):
