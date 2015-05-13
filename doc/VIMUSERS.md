@@ -104,6 +104,22 @@ While cmdline (pressing :) still works like in vim, the emacs filter view (helm 
 * C-r does not work (inserting a word, file, etc under cursor)
 
 
+## Differences within emacs
+Emacs provides enhancements over the vim-emulated functionality that may be useful, but some of these work inconsistently with how vim users would expect. The following section will explain why you might want to use these features and how to make them behave as you'd expect.
+
+### Search history
+
+Emacs provides query-replace which is a lo-fi version of :substitute. [visual-regexp](https://github.com/benma/visual-regexp.el) provides better incremental search highlighting (different colours for different capture groups) and [visual-regexp-steroids](https://github.com/benma/visual-regexp-steroids.el/) lets you use Python or Perl compatible regular expressions (instead of learning Emacs-style). Invoke them with `vr/query-replace`.
+
+While search history and replacement history are combined as expected in Ex commands, they aren't combined in emacs' query-replace (the emacs version of :substitute).
+
+    ;; Use the same history for query-replace and regexp-search so you can
+    ;; search with / and use those queries in query-replace.
+    (setq query-replace-from-history-variable 'regexp-search-ring)
+
+You can use `M-n`/`M-p` to navigate the history.
+
+
 # Common Vim Changes
 There are some maps/settings that are so common that they're suggested by the vim help or implemented in [vim-sensible](https://github.com/tpope/vim-sensible). Here's how you do them in spacemacs.
 
