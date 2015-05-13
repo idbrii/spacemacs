@@ -278,3 +278,17 @@ Functions called from a binding should always have (interactive) first. You can 
 
 # Creating a first configuration layer
 # Basic package config with use-package
+
+# Harmonizing with Plugins
+
+## fugitive and magit
+
+Some fugitive functionality is missing:
+* [staging via side-by-side diff](http://emacs.stackexchange.com/questions/12371/stage-diff-hunk-into-git-from-ediff)
+* [folding in diff view](http://emacs.stackexchange.com/questions/5876/how-can-i-only-show-different-lines-in-ediff)
+
+There are way to stage hunks:
+* [Staging hunks from a file instead of from a diff](http://emacs.stackexchange.com/questions/6028/git-is-it-possible-to-stage-a-selected-region-directly-from-the-file-buffer)
+* http://stackoverflow.com/questions/9521929/splitting-a-hunk-with-magit
+* http://emacs.stackexchange.com/questions/6083/magit-split-hunk-into-two-hunks
+
