@@ -52,13 +52,35 @@ In vim, if you use 'wrap' and 'linebreak', you get softwrapped text that breaks 
 * C-l scrolls buffer down instead of redrawing
 * C-w C-q doesn't quit a buffer
 
-  (evil-nmap "C-w q" 'evil-window-delete)
+    (evil-nmap "C-w q" 'evil-window-delete)
 
 ## Differences in visual mode
 * \* searches for selection instead of word under cursor. This behavior is similar to [vim-visual-star-search](https://github.com/bronson/vim-visual-star-search). To get something close to the vanilla vim behavior (but it searches for partial words):
 
     (evil-vmap "*" 'evil-search-unbounded-word-forward)
     (evil-vmap "g *" 'evil-visualstar/begin-search-forward)
+
+## Differences in insert mode
+* `C-x C-f` does not do filename completion.
+
+It invokes dired, but dired just jumps to the selected file. You can use `SPC f y` to yank the filename of the selected file after jumping to it, and then `SPC bb` to go back to your original file and paste.
+
+* `C-u` does not clear the line before the cursor.
+
+[This answer](http://stackoverflow.com/a/3888306/79125) demonstrates how to implement a kill-line function as a lambda.
+
+    (evil-imap "C-u" '(lambda () (interactive) (kill-line 0)))
+
+If you `inoremap <C-U> <C-G>u<C-U>` so that you can undo the deletion separately from what happens around it, then try this instead:
+
+    (defun backward-kill-line ()
+        "Kill from cursor to beginning of line.
+            via http://stackoverflow.com/a/3888306/79125"
+        (interactive)
+        (undo-boundary) ;; Similar to vim's `C-g u`, this creates an undo point
+        (kill-line 0))
+    (evil-imap "C-u" 'backward-kill-line)
+
 
 ## Differences in search cmdline
 Pressing `/` enters search cmdline like in vim.
