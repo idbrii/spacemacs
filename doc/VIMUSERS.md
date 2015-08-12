@@ -52,7 +52,22 @@ In vim, if you use 'wrap' and 'linebreak', you get softwrapped text that breaks 
 * C-l scrolls buffer down instead of redrawing
 * C-w C-q doesn't quit a buffer
 
+I think this is because spacemacs is trying to move all `C-w` commands to `SPC w`. If you prefer the old way:
+
     (evil-nmap "C-w q" 'evil-window-delete)
+
+* surround doesn't support `r` and `a` aliases
+
+  ;; vim-surround uses r and a for [] and <>
+  (setq-default evil-surround-pairs-alist
+                (cons
+                 '(?r . ("[" . "]"))
+                 evil-surround-pairs-alist))
+  (setq-default evil-surround-pairs-alist
+                (cons
+                 '(?a . ("<" . ">"))
+                 evil-surround-pairs-alist))
+
 
 ## Differences in visual mode
 * \* searches for selection instead of word under cursor. This behavior is similar to [vim-visual-star-search](https://github.com/bronson/vim-visual-star-search). To get something close to the vanilla vim behavior (but it searches for partial words):
@@ -145,6 +160,15 @@ Use C-q to start block selection.
 
 From :help cw
 
+* Persistenet undo
+
+Emacs appears to have different undo systems (undo-list and undo-tree) that are unrelated and no single setting for persistent undo. Spacemacs includes undo-tree (which is like Gundo or vim-undotree) which supports [persistent undo](http://stackoverflow.com/a/13920762/79125):
+
+    ;; Enable persistent undo ('undofile') and move the undo files to another directory ('undodir').
+    (setq undo-tree-auto-save-history t
+          undo-tree-history-directory-alist `(("." . ,(expand-file-name "~/.emacs-cache/undo/"))))
+
+
 # Lingo
 
 maps/mappings: keybindings. They're always listed with a space between each keystroke.
@@ -223,6 +247,8 @@ At any time, you can edit your spacemacs with:
 
 # Customising key bindings
 
+Spacemacs supports two kinds of mappings: key bindings and mappings. Mappings are actually keyboard macros.
+
 You map keys with evil-define-key. If you had surround mapped to a different key, you could use this to restore s to its default behavior and map `c` as your surround key (in visual mode only):
 
     (evil-define-key 'visual evil-surround-mode-map "s" 'evil-substitute)
@@ -291,4 +317,5 @@ There are way to stage hunks:
 * [Staging hunks from a file instead of from a diff](http://emacs.stackexchange.com/questions/6028/git-is-it-possible-to-stage-a-selected-region-directly-from-the-file-buffer)
 * http://stackoverflow.com/questions/9521929/splitting-a-hunk-with-magit
 * http://emacs.stackexchange.com/questions/6083/magit-split-hunk-into-two-hunks
+
 
